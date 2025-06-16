@@ -43,6 +43,13 @@
             </tr>
           </tbody>
         </table>
+        <div class="dropdown">
+          <button onclick="dropdownClick()" class="dropdown-button">ʿAṣr Time (Madhab)</button>
+          <div id="asrSetting" class="dropdown-content">
+            <a href="#" onclick="updateAsrTime('0')">Shāfiʿī</a>
+            <a href="#" onclick="updateAsrTime('1')">Ḥanafī</a>
+        </div>
+      </div> 
     </main>
     <script src="resources/config.js"></script>
     <script src="index.js"></script>
