@@ -2,6 +2,8 @@
 
 # Salah – Prayer Times Application
 
+![Preview](https://i.imgur.com/qqloCvY.png)
+
 ## 🕌 About
 
 **Salah** is a lightweight, front-end-only web application that displays Islamic prayer times. It is built entirely with **vanilla JavaScript** – no external libraries or frameworks (like Node.js or Tailwind CSS) are used.
