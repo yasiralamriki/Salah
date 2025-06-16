@@ -1,10 +1,18 @@
 body {
-      display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     background-color: #09090b;
     font-family: 'Inter', sans-serif;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
 }
 
 h1 {
@@ -26,6 +34,7 @@ table {
     border-collapse: separate;
     border: 2px solid #2f2f2f;
     border-radius: 8px;
+    margin-bottom: 32px;
 }
 
 thead {
