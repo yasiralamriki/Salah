@@ -11,31 +11,28 @@
    - Value: Your Google Maps API key
    - Environment: Production (and Preview if needed)
 
-### 2. Build Configuration
+### 2. Deploy
 
-The project is configured to build automatically for Vercel using the `vercel.json` configuration.
-
-### 3. Deploy
-
-Push your code to GitHub and connect it to Vercel, or use the Vercel CLI:
+Simply push your code to GitHub and connect it to Vercel, or use the Vercel CLI:
 
 ```bash
-npm run build  # Optional: test build locally
 vercel --prod
 ```
 
-### 4. How it Works
+### 3. How it Works
 
-- **Local Development**: Uses `.env` file and loads via fetch
-- **Production (Vercel)**: Environment variables are injected at build time into the HTML
-- The `env-loader.js` automatically detects which environment it's running in
+- **Local Development**: Uses `.env` file loaded via fetch
+- **Production (Vercel)**: Uses a serverless API function at `/api/config` to securely serve the API key
+- The `env-loader.js` automatically detects the environment and uses the appropriate method
 
-### 5. Local Testing of Production Build
+### 4. No Build Step Required
+
+This setup works as a static site with serverless functions - no complex build process needed!
+
+### 5. Local Testing
 
 ```bash
-npm run build
-cd dist
-python -m http.server 8002
+npm start
 ```
 
-Then visit `http://localhost:8002`
+Then visit `http://localhost:8001`

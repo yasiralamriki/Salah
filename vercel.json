@@ -1,11 +1,17 @@
 {
-  "buildCommand": "node build-for-vercel.js",
-  "outputDirectory": "dist",
-  "functions": {},
+  "functions": {
+    "api/config.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "routes": [
     {
+      "src": "/api/config",
+      "dest": "/api/config.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ]
 }

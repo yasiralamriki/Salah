@@ -7,6 +7,25 @@ class EnvLoader {
 
     async loadEnv() {
         try {
+            // Check if we're likely on Vercel (by hostname)
+            const isVercel = window.location.hostname.includes('.vercel.app') || 
+                           window.location.hostname.includes('vercel.app');
+            
+            if (isVercel) {
+                // Try to load from API endpoint for Vercel
+                try {
+                    const response = await fetch('/api/config');
+                    if (response.ok) {
+                        const config = await response.json();
+                        this.env = config;
+                        this.loaded = true;
+                        return this.env;
+                    }
+                } catch (apiError) {
+                    console.warn('Failed to load from API:', apiError);
+                }
+            }
+
             // First check if we're in production and have build-time injected variables
             if (window.INJECTED_ENV) {
                 this.env = window.INJECTED_ENV;
@@ -43,7 +62,7 @@ class EnvLoader {
                 return this.env;
             }
             
-            throw new Error('Environment variables could not be loaded');
+            throw new Error('Environment variables could not be loaded. Please ensure GOOGLE_API_KEY is configured.');
         }
     }
 

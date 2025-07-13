@@ -56,11 +56,10 @@ Then open your browser and navigate to `http://localhost:8001`.
 
 2. **Deploy:**
    ```bash
-   npm run build  # Test build locally (optional)
    vercel --prod  # Deploy to Vercel
    ```
 
-The application automatically detects whether it's running locally (uses `.env` file) or in production (uses injected environment variables).
+The application automatically detects whether it's running locally (uses `.env` file) or in production (uses serverless API function for secure environment variable access).
 
 For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
@@ -69,5 +68,5 @@ For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 ## 🛠️ Development vs Production
 
 - **Local Development**: Uses `.env` file and Python server
-- **Production (Vercel)**: Uses build-time environment variable injection
-- The code automatically adapts to both environments
+- **Production (Vercel)**: Uses serverless API function at `/api/config` for secure environment variable access
+- The code automatically adapts to both environments without any build step required

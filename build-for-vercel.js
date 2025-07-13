@@ -1,9 +1,29 @@
 const fs = require('fs');
 const path = require('path');
 
+// Helper function to copy directory recursively (compatible with older Node.js)
+function copyDirSync(src, dest) {
+    if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
+    }
+    
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+    
+    for (let entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        
+        if (entry.isDirectory()) {
+            copyDirSync(srcPath, destPath);
+        } else {
+            fs.copyFileSync(srcPath, destPath);
+        }
+    }
+}
+
 // Create dist directory
 if (!fs.existsSync('dist')) {
-    fs.mkdirSync('dist');
+    fs.mkdirSync('dist', { recursive: true });
 }
 
 // Read environment variables
@@ -14,24 +34,25 @@ if (!googleApiKey) {
     process.exit(1);
 }
 
-// Copy static files
-const filesToCopy = ['resources'];
+// Copy resources directory
+const resourcesSrc = path.join('.', 'resources');
+const resourcesDest = path.join('dist', 'resources');
 
-filesToCopy.forEach(file => {
-    const srcPath = path.join('.', file);
-    const destPath = path.join('dist', file);
-    
-    if (fs.statSync(srcPath).isDirectory()) {
-        // Copy directory recursively
-        fs.cpSync(srcPath, destPath, { recursive: true });
-    } else {
-        // Copy file
-        fs.copyFileSync(srcPath, destPath);
-    }
-});
+if (fs.existsSync(resourcesSrc)) {
+    copyDirSync(resourcesSrc, resourcesDest);
+} else {
+    console.error('Resources directory not found');
+    process.exit(1);
+}
 
 // Copy and modify index.html to inject environment variables
-let indexHtml = fs.readFileSync('index.html', 'utf8');
+let indexHtml;
+try {
+    indexHtml = fs.readFileSync('index.html', 'utf8');
+} catch (error) {
+    console.error('Could not read index.html:', error.message);
+    process.exit(1);
+}
 
 // Inject environment variables as a script tag before env-loader
 const envScript = `
@@ -47,7 +68,14 @@ indexHtml = indexHtml.replace('<script src="env-loader.js"></script>', envScript
 fs.writeFileSync(path.join('dist', 'index.html'), indexHtml);
 
 // Copy JavaScript files
-fs.copyFileSync('env-loader.js', path.join('dist', 'env-loader.js'));
-fs.copyFileSync('index.js', path.join('dist', 'index.js'));
+try {
+    fs.copyFileSync('env-loader.js', path.join('dist', 'env-loader.js'));
+    fs.copyFileSync('index.js', path.join('dist', 'index.js'));
+} catch (error) {
+    console.error('Could not copy JavaScript files:', error.message);
+    process.exit(1);
+}
+
+console.log('✅ Build completed successfully for Vercel deployment');
 
 console.log('✅ Build completed successfully for Vercel deployment');
