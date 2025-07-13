@@ -4,7 +4,7 @@
   "description": "Prayer times application",
   "main": "index.js",
   "scripts": {
-    "build": "node -e \"const fs = require('fs'); const config = fs.readFileSync('_config.js', 'utf8').replace('%%GOOGLE_API_KEY%%', process.env.GOOGLE_API_KEY || ''); fs.writeFileSync('_config.js', config);\"",
+    "vercel-build": "node -e \"const fs = require('fs'); const path = require('path'); if (!fs.existsSync('public')) fs.mkdirSync('public'); ['index.html', 'env-loader.js', 'index.js'].forEach(f => fs.copyFileSync(f, path.join('public', f))); if (fs.existsSync('resources')) { if (!fs.existsSync('public/resources')) fs.mkdirSync('public/resources'); fs.readdirSync('resources').forEach(f => fs.copyFileSync(path.join('resources', f), path.join('public/resources', f))); }\"",
     "start": "python server.py",
     "dev": "python server.py"
   },

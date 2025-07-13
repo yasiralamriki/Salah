@@ -7,25 +7,13 @@ class EnvLoader {
 
     async loadEnv() {
         try {
-            // First check if we have Vercel config
-            if (window.VERCEL_CONFIG && window.VERCEL_CONFIG.GOOGLE_API_KEY && window.VERCEL_CONFIG.GOOGLE_API_KEY !== '%%GOOGLE_API_KEY%%') {
-                this.env = window.VERCEL_CONFIG;
-                this.loaded = true;
-                return this.env;
-            }
-
-            // Check if we have environment config from build (fallback)
-            if (window.ENV_CONFIG && window.ENV_CONFIG.GOOGLE_API_KEY && window.ENV_CONFIG.GOOGLE_API_KEY !== '%%GOOGLE_API_KEY%%') {
-                this.env = window.ENV_CONFIG;
-                this.loaded = true;
-                return this.env;
-            }
-
-            // Check if we have build-time injected variables (fallback)
-            if (window.INJECTED_ENV) {
-                this.env = window.INJECTED_ENV;
-                this.loaded = true;
-                return this.env;
+            // Check if we're on Vercel
+            const isVercel = window.location.hostname.includes('.vercel.app') || 
+                           window.location.hostname.includes('vercel.app');
+            
+            if (isVercel) {
+                // For Vercel, show a helpful message about configuration
+                throw new Error('Please configure GOOGLE_API_KEY environment variable in your Vercel project settings');
             }
 
             // Try to load from .env file (for local development)
