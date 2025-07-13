@@ -4,6 +4,7 @@
   "description": "Prayer times application",
   "main": "index.js",
   "scripts": {
+    "build": "node build-for-vercel.js",
     "start": "python server.py",
     "dev": "python server.py"
   },

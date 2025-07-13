@@ -7,7 +7,19 @@ class EnvLoader {
 
     async loadEnv() {
         try {
+            // First check if we're in production and have build-time injected variables
+            if (window.INJECTED_ENV) {
+                this.env = window.INJECTED_ENV;
+                this.loaded = true;
+                return this.env;
+            }
+
+            // Try to load from .env file (for local development)
             const response = await fetch('.env');
+            if (!response.ok) {
+                throw new Error('Could not fetch .env file');
+            }
+            
             const envContent = await response.text();
             
             envContent.split('\n').forEach(line => {
@@ -23,6 +35,14 @@ class EnvLoader {
             return this.env;
         } catch (error) {
             console.error('Failed to load .env file:', error);
+            
+            // Fallback: check if there are any injected environment variables
+            if (typeof GOOGLE_API_KEY !== 'undefined') {
+                this.env.GOOGLE_API_KEY = GOOGLE_API_KEY;
+                this.loaded = true;
+                return this.env;
+            }
+            
             throw new Error('Environment variables could not be loaded');
         }
     }

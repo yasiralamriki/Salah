@@ -41,4 +41,33 @@ Or directly with Python:
 python server.py
 ```
 
-Then open your browser and navigate to `http://localhost:8000`.
+Then open your browser and navigate to `http://localhost:8001`.
+
+---
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. **Set Environment Variables in Vercel:**
+   - Go to your Vercel project settings
+   - Add `GOOGLE_API_KEY` as an environment variable
+   - Set the value to your Google Maps API key
+
+2. **Deploy:**
+   ```bash
+   npm run build  # Test build locally (optional)
+   vercel --prod  # Deploy to Vercel
+   ```
+
+The application automatically detects whether it's running locally (uses `.env` file) or in production (uses injected environment variables).
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+---
+
+## 🛠️ Development vs Production
+
+- **Local Development**: Uses `.env` file and Python server
+- **Production (Vercel)**: Uses build-time environment variable injection
+- The code automatically adapts to both environments
