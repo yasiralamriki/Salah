@@ -1,17 +1,1 @@
-{
-  "functions": {
-    "api/config.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/config",
-      "dest": "/api/config.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
-}
+{}

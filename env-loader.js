@@ -7,26 +7,21 @@ class EnvLoader {
 
     async loadEnv() {
         try {
-            // Check if we're likely on Vercel (by hostname)
-            const isVercel = window.location.hostname.includes('.vercel.app') || 
-                           window.location.hostname.includes('vercel.app');
-            
-            if (isVercel) {
-                // Try to load from API endpoint for Vercel
-                try {
-                    const response = await fetch('/api/config');
-                    if (response.ok) {
-                        const config = await response.json();
-                        this.env = config;
-                        this.loaded = true;
-                        return this.env;
-                    }
-                } catch (apiError) {
-                    console.warn('Failed to load from API:', apiError);
-                }
+            // First check if we have Vercel config
+            if (window.VERCEL_CONFIG && window.VERCEL_CONFIG.GOOGLE_API_KEY && window.VERCEL_CONFIG.GOOGLE_API_KEY !== '%%GOOGLE_API_KEY%%') {
+                this.env = window.VERCEL_CONFIG;
+                this.loaded = true;
+                return this.env;
             }
 
-            // First check if we're in production and have build-time injected variables
+            // Check if we have environment config from build (fallback)
+            if (window.ENV_CONFIG && window.ENV_CONFIG.GOOGLE_API_KEY && window.ENV_CONFIG.GOOGLE_API_KEY !== '%%GOOGLE_API_KEY%%') {
+                this.env = window.ENV_CONFIG;
+                this.loaded = true;
+                return this.env;
+            }
+
+            // Check if we have build-time injected variables (fallback)
             if (window.INJECTED_ENV) {
                 this.env = window.INJECTED_ENV;
                 this.loaded = true;
@@ -53,9 +48,9 @@ class EnvLoader {
             this.loaded = true;
             return this.env;
         } catch (error) {
-            console.error('Failed to load .env file:', error);
+            console.error('Failed to load environment variables:', error);
             
-            // Fallback: check if there are any injected environment variables
+            // Final fallback: check if there are any global injected environment variables
             if (typeof GOOGLE_API_KEY !== 'undefined') {
                 this.env.GOOGLE_API_KEY = GOOGLE_API_KEY;
                 this.loaded = true;

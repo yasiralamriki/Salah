@@ -4,6 +4,7 @@
   "description": "Prayer times application",
   "main": "index.js",
   "scripts": {
+    "build": "node -e \"const fs = require('fs'); const config = fs.readFileSync('_config.js', 'utf8').replace('%%GOOGLE_API_KEY%%', process.env.GOOGLE_API_KEY || ''); fs.writeFileSync('_config.js', config);\"",
     "start": "python server.py",
     "dev": "python server.py"
   },
