@@ -12,14 +12,33 @@
 
 ## ⚙️ Configuration
 
-> [!WARNING]
-> This setup involves placing your **API key directly in a JavaScript file**, which makes it publicly visible. To secure your key, it is strongly recommended that you apply **API restrictions** (e.g., restrict by referrer or IP) via the [Google Cloud Console](https://console.cloud.google.com/).
+> [!NOTE]
+> This application now uses environment variables stored in a `.env` file for better security and configuration management.
 
 ### Steps:
 
 1. Obtain an API Key for the **Google Maps Geocoding API** from [Google Cloud Console](https://console.cloud.google.com/).
-2. In the `./resources` directory, create a file named `config.js`.
-3. Inside `config.js`, define your API key as shown below:
+2. Copy the `.env.example` file to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+3. Edit the `.env` file and replace `your_google_api_key_here` with your actual API key:
+   ```env
+   GOOGLE_API_KEY=your_actual_api_key_here
+   ```
 
-```js
-const googleApiKey = "Your key goes here";
+### Running the Application
+
+To run the application locally:
+
+```bash
+npm start
+```
+
+Or directly with Python:
+
+```bash
+python server.py
+```
+
+Then open your browser and navigate to `http://localhost:8000`.

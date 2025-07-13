@@ -1,9 +1,62 @@
 // Cache location
 let cachedLatitude = null;
 let cachedLongitude = null;
+let googleApiKey = null;
+
+// Initialize the application
+async function initApp() {
+    try {
+        // Load environment variables
+        await window.envLoader.loadEnv();
+        googleApiKey = window.envLoader.get('GOOGLE_API_KEY');
+        
+        if (!googleApiKey) {
+            throw new Error('GOOGLE_API_KEY not found in environment variables');
+        }
+        
+        // Initialize geolocation if available
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                cachedLatitude = position.coords.latitude;
+                cachedLongitude = position.coords.longitude;
+
+                // Set location text to the location
+                try {
+                    const city = await getCityByLocation(cachedLatitude, cachedLongitude);
+                    if (city) {
+                        document.getElementById("locationText").textContent = `Location: ${city}`;
+                    } else {
+                        console.log("City not found");
+                    }
+                } catch (error) {
+                    console.error("Error getting city:", error);
+                }
+
+                // Set the prayer times
+                try {
+                    const timings = await getPrayerTimes(cachedLatitude, cachedLongitude);
+                    document.getElementById("fajrTime").textContent = timings.Fajr;
+                    document.getElementById("dhuhrTime").textContent = timings.Dhuhr;
+                    document.getElementById("asrTime").textContent = timings.Asr;
+                    document.getElementById("maghribTime").textContent = timings.Maghrib;
+                    document.getElementById("ishaTime").textContent = timings.Isha;
+                } catch (error) {
+                    console.error("Error getting prayer times:", error);
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+        document.getElementById("locationText").textContent = 'Error: Could not load configuration';
+    }
+}
 
 // Get a city by the latitude and longitude
 function getCityByLocation(latitude, longitude) {
+    if (!googleApiKey) {
+        throw new Error('Google API key not available');
+    }
+    
     return fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${googleApiKey}`)
         .then(response => response.json())
         .then(data => {
@@ -37,32 +90,8 @@ function getPrayerTimes(latitude, longitude, madhab="0") {
     .then(data => data.data.timings );
 }
 
-// If geolocation services are enabled then set the prayer times according to the location
-if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition((position) => {
-        cachedLatitude = position.coords.latitude;
-        cachedLongitude  = position.coords.longitude;
-
-    // Set location text to the location
-    getCityByLocation(cachedLatitude, cachedLongitude)
-        .then(city => {
-            if (city) {
-                document.getElementById("locationText").textContent = `Location: ${city}`;
-            } else {
-                console.log("City not found");
-            }
-    });
-
-    // Set the prayer times
-    getPrayerTimes(cachedLatitude, cachedLongitude).then(timings => {
-        document.getElementById("fajrTime").textContent = timings.Fajr;
-        document.getElementById("dhuhrTime").textContent = timings.Dhuhr;
-        document.getElementById("asrTime").textContent = timings.Asr;
-        document.getElementById("maghribTime").textContent = timings.Maghrib;
-        document.getElementById("ishaTime").textContent = timings.Isha;
-    });
-    });
-}
+// Initialize the application when the page loads
+document.addEventListener('DOMContentLoaded', initApp);
 
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */

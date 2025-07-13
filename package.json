@@ -1,0 +1,13 @@
+{
+  "name": "salah-prayer-times",
+  "version": "1.0.0",
+  "description": "Prayer times application",
+  "main": "index.js",
+  "scripts": {
+    "start": "python server.py",
+    "dev": "python server.py"
+  },
+  "keywords": ["prayer", "times", "salah", "islamic"],
+  "author": "",
+  "license": "MIT"
+}
